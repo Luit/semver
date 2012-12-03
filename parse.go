@@ -16,7 +16,9 @@ var (
 	invalidCharacter    = errors.New("semver.Parse: invalid character in string")
 )
 
-func parse(version string) (v Version, err error) {
+// Turn a version string into a Version. Will return an error if it can't
+// recognize a proper (semantic) version number in this string.
+func Parse(version string) (v Version, err error) {
 	l := lex(version)
 
 	if v.Major, err = parseNumber(l); err != nil {

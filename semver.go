@@ -4,8 +4,6 @@ package semver
 
 import (
 	"bytes"
-	"errors"
-	"regexp"
 	"strconv"
 )
 
@@ -16,48 +14,6 @@ import (
 type Version struct {
 	Major, Minor, Patch uint
 	PreRelease, Build   [][]byte
-}
-
-var versionExp = regexp.MustCompile(`([0-9])\.([0-9])\.([0-9])(\-[0-9A-Za-z\-\.]+)?(\+[0-9A-Za-z\-\.]+)?`)
-var preReleaseExp = regexp.MustCompile(`[-.][0-9A-Za-z-]*`)
-var buildExp = regexp.MustCompile(`[+.][0-9A-Za-z-]*`)
-
-// Turn a version string into a Version. Will return an error if it can't
-// recognize a proper (semantic) version number in this string.
-func Parse(version string) (v Version, err error) {
-	// TODO: rewrite properly, preferably without regexp
-	matches := versionExp.FindSubmatch([]byte(version))
-	if len(matches) != 6 {
-		return v, errors.New("Regexp didn't match as expected")
-	}
-	major, err := strconv.ParseUint(string(matches[1]), 10, 64) // TODO: hard-code 64 here? Decide!
-	if err != nil {
-		return
-	}
-	v.Major = uint(major)
-
-	minor, err := strconv.ParseUint(string(matches[2]), 10, 64) // TODO: hard-code 64 here? Decide!
-	if err != nil {
-		return
-	}
-	v.Minor = uint(minor)
-
-	patch, err := strconv.ParseUint(string(matches[3]), 10, 64) // TODO: hard-code 64 here? Decide!
-	if err != nil {
-		return
-	}
-	v.Patch = uint(patch)
-
-	v.PreRelease = preReleaseExp.FindAll(matches[4], -1)
-	for n := range v.PreRelease {
-		v.PreRelease[n] = v.PreRelease[n][1:] // Strip dot and dash
-	}
-	v.Build = buildExp.FindAll(matches[5], -1)
-	for n := range v.Build {
-		v.Build[n] = v.Build[n][1:] // Strip dot and plus
-	}
-
-	return
 }
 
 // TODO: could be unpredictible with hex identifiers that look decimal; is
