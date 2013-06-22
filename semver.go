@@ -20,15 +20,28 @@ type Version struct {
 // this the best way?
 func chunkCompare(i, j []byte) int {
 	var ii, ij uint64 // goto can't jump over declaration
+	var bi, bj bool
 
 	ii, err := strconv.ParseUint(string(i), 10, 64) // TODO: hard-code 64 here? Decide!
 	if err != nil {
-		goto compareBytewise
+		bi = true
 	}
 
 	ij, err = strconv.ParseUint(string(j), 10, 64) // TODO: hard-code 64 here? Decide!
 	if err != nil {
+		bj = true
+	}
+
+	if bi && bj {
 		goto compareBytewise
+	}
+
+	if bi {
+		return 1
+	}
+
+	if bj {
+		return -1
 	}
 
 	if ii == ij {
