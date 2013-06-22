@@ -200,7 +200,7 @@ func TestSortOrder(t *testing.T) {
 		"1.0.0-beta",
 		"1.0.0-beta.2",
 		"1.0.0-beta.11",
-		"1.0.0-beta.10ab", // "Numeric identifier always have lower ~"
+		"1.0.0-beta.10ab", // "Numeric identifiers always have lower"
 		"1.0.0-rc.1",
 		"1.0.0",
 		"2.0.0",
