@@ -1,5 +1,5 @@
 // Package semver provides utilities for working with the Semantic Versioning
-// Specification (SemVer) 2.0.0-rc1
+// Specification (SemVer) 2.0.0
 package semver
 
 import (
@@ -69,32 +69,6 @@ func preReleaseCompare(i, j [][]byte) int {
 	return 1 // i is more specific, so i is greater version
 }
 
-func buildCompare(i, j [][]byte) int {
-	li, lj := len(i), len(j)
-	if li == 0 && lj != 0 {
-		return -1 // No build means i is lesser version
-	}
-	if li != 0 && lj == 0 {
-		return 1
-	}
-
-	for n := range j {
-		if n == li {
-			return -1 // j is more specific, so i is lesser version
-		}
-		c := chunkCompare(i[n], j[n])
-		if c == 0 {
-			continue // undecided, look at next chunk
-		}
-		return c
-	}
-
-	if li == lj {
-		return 0
-	}
-	return 1 // i is more specific, so i is greater version
-}
-
 // Less tests precedence of Version i over Version j.
 func Less(i, j Version) bool {
 	if i.Major < j.Major {
@@ -107,13 +81,7 @@ func Less(i, j Version) bool {
 		return true
 	}
 
-	switch preReleaseCompare(i.PreRelease, j.PreRelease) {
-	case -1:
-		return true
-	case 1:
-		return false
-	}
-	return buildCompare(i.Build, j.Build) == -1
+	return preReleaseCompare(i.PreRelease, j.PreRelease) == -1
 }
 
 // Returns the string representation of Version v.
